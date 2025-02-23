@@ -11,7 +11,7 @@ void LoadInst::execute(CPU& cpu)
 	auto funct3{ getFunct3().to_ulong() };
 	auto imm{ getImm().to_ulong() };
 	word_t rs1Val{ cpu.getGPR(rs1) };
-	vaddr_t addr{ rs1Val + imm };
+	paddr_t addr{ rs1Val + imm };
 	std::bitset<32> rdVal{};
 
 	switch (funct3)
@@ -114,7 +114,7 @@ void StoreInst::execute(CPU& cpu)
 	auto imm{ getImm().to_ulong() };
 	word_t rs1Val{ cpu.getGPR(rs1.to_ulong()) };
 	word_t rs2Val{ cpu.getGPR(rs2.to_ulong()) };
-	vaddr_t addr{ rs1Val + imm };
+	paddr_t addr{ rs1Val + imm };
 
     switch (funct3)
     {

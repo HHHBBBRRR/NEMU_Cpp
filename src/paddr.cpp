@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include "paddr.h"
 
-void Memory::init_pmem(std::uint64_t size)
+void Memory::init_pmem(std::uint32_t size)
 {
     if (m_initialized)
     {
@@ -34,12 +34,12 @@ void Memory::write(const index_t idx, const word_t data)
     m_pmem[idx + 3] = static_cast<byte_t>(data >> 24);
 }
 
-void init_mem(std::uint64_t size)
+void init_mem(std::uint32_t size)
 {
     Memory::get_instance().init_pmem(size);
 }
 
-std::uint64_t load_img(std::string_view filename)
+std::uint32_t load_img(std::string_view filename)
 {
     std::ifstream img(filename.data(), std::ios::binary);
 

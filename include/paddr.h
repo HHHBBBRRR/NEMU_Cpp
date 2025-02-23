@@ -22,7 +22,7 @@ public:
     Memory(Memory const&) = delete;
     Memory& operator=(Memory const&) = delete;
 
-    void init_pmem(std::uint64_t size);
+    void init_pmem(std::uint32_t size);
 
     inline index_t guest_to_host(const paddr_t addr) const { return addr - MBASE; }
     inline paddr_t host_to_guest(const index_t idx) const { return idx + MBASE; }
@@ -92,7 +92,7 @@ T Memory::read(const index_t idx) const
 /*
  * Initialize physical memory (only called once)
 */
-void init_mem(std::uint64_t size = MSIZE);
+void init_mem(std::uint32_t size = MSIZE);
 
 /*
  * Load image(bin only) into physical memory
@@ -100,7 +100,7 @@ void init_mem(std::uint64_t size = MSIZE);
  * @param filename: filename of the image to load
  * @return: number of bytes loaded
 */
-std::uint64_t load_img(const std::string& filename);
+std::uint32_t load_img(const std::string& filename);
 
 /*
  * memory read (including MMIO)
