@@ -1,5 +1,5 @@
-#ifndef RVI
-#define RVI
+#ifndef RVI_H
+#define RVI_H
 
 #include "instruction.h"
 
@@ -66,4 +66,4 @@ public:
 	void execute(CPU& cpu) override;
 };
 
-#endif // RVI
+#endif // !RVI_H

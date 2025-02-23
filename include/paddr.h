@@ -147,4 +147,4 @@ void pmem_write(const paddr_t addr, const auto data)
     }
 }
 
-#endif // PADDR_H
+#endif // !PADDR_H

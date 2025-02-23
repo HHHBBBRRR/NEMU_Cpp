@@ -15,4 +15,4 @@ constexpr std::uint32_t NUM_REGS{ 32 };
 
 constexpr std::uint32_t XLEN{ 32 };
 
-#endif // COMMON_H
+#endif // !COMMON_H
