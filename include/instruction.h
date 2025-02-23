@@ -3,17 +3,9 @@
 
 #include <bitset>
 #include "common.h"
+#include "cpu.h"
 
 using std::bitset;
-
-class CPU
-{
-private:
-    /* data */
-public:
-    CPU(/* args */);
-    ~CPU();
-};
 
 class Instruction
 {
