@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <stdexcept>
 #include <type_traits>
+#include <string_view>
 #include <vector>
 #include "common.h"
 
@@ -100,7 +101,7 @@ void init_mem(std::uint32_t size = MSIZE);
  * @param filename: filename of the image to load
  * @return: number of bytes loaded
 */
-std::uint32_t load_img(const std::string& filename);
+std::uint32_t load_img(std::string_view filename);
 
 /*
  * memory read (including MMIO)
