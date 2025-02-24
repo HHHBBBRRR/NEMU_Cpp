@@ -8,6 +8,8 @@
 #include "paddr.h"
 #include "instruction.h"
 #include "rvi.h"
+#include "zicsr.h"
+#include "state.h"
 
 using std::make_shared;
 
@@ -30,6 +32,8 @@ InstructionFactory::InstructionFactory()
     m_instructionMap[0b1100011] = make_shared<BranchInst>();
     m_instructionMap[0b1100111] = make_shared<JALRInst>();
     m_instructionMap[0b1101111] = make_shared<JALInst>();
+    /* Zicsr */
+    m_instructionMap[0b1110011] = make_shared<CSRInst>();
 }
 
 std::shared_ptr<Instruction> InstructionFactory::createInstruction(word_t inst)
@@ -81,6 +85,15 @@ void CPU::isa_exec_once()
     word_t pc{ getPC() };
     word_t inst{ inst_fetch() };
     auto instruction{ m_factory.createInstruction(inst) };
+
+    try
+    {
+        auto instruction{ m_factory.createInstruction(inst) };
+    }
+    catch(const std::exception& e)
+    {
+        invalid_inst(pc);
+    }
 
     instruction->decode(inst);
     instruction->execute(*this);
