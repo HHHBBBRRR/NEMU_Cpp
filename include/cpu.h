@@ -28,7 +28,7 @@ public:
 	word_t getPC() const;
 	void setPC(word_t value);
 	void isa_exec_once();
-
+	void isa_reg_display() const;
 private:
 	inline word_t inst_fetch() const;
 

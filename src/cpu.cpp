@@ -4,12 +4,15 @@
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <iomanip>
+#include <iostream>
 #include "common.h"
 #include "paddr.h"
 #include "instruction.h"
 #include "rvi.h"
 #include "zicsr.h"
 #include "state.h"
+#include "cpu.h"
 
 using std::make_shared;
 
@@ -102,6 +105,20 @@ void CPU::isa_exec_once()
     {
         setPC(pc + 4);
     }
+}
+
+void CPU::isa_reg_display() const
+{
+    std::cout << ANSI_FG_WHITE << ANSI_BG_BLUE << "PC: " << std::hex << getPC() << ANSI_NONE << std::endl;
+    for (std::uint32_t i{}; i < NUM_REGS; ++i)
+    {
+        std::cout << std::left << std::setw(3) << regs[i] << ": " << std::setw(10) << std::hex << getGPR(i) << "\t";
+        if ((i + 1) % 4 == 0)
+        {
+            std::cout << std::endl;
+        }
+    }
+    std::cout << std::endl;
 }
 
 inline word_t CPU::inst_fetch() const
