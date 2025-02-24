@@ -102,7 +102,7 @@ void AUIPCInst::execute(CPU& cpu)		// auipc rd, upimm
 	auto imm{ getImm().to_ulong() };
 	word_t rdVal{};
 
-	rdVal = cpu.getPC() + (imm << 12);
+	rdVal = cpu.getPC() + imm;
 
 	cpu.setGPR(rd, rdVal);
 }
@@ -298,6 +298,7 @@ void JALInst::execute(CPU& cpu)		// jal rd, label
 	word_t rdVal{};
 	word_t targetAddr{};
 
+	rdVal = cpu.getPC() + 4;
 	targetAddr = cpu.getPC() + imm;
 	if (targetAddr % 4)
 	{
@@ -305,5 +306,5 @@ void JALInst::execute(CPU& cpu)		// jal rd, label
 	}
 
 	cpu.setPC(targetAddr);
-	cpu.setGPR(rd, cpu.getPC() + 4);
+	cpu.setGPR(rd, rdVal);
 }
