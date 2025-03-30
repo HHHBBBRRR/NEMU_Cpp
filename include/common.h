@@ -6,6 +6,7 @@
 using byte_t = std::uint8_t;
 using half_t = std::uint16_t;
 using word_t = std::uint32_t;
+using sword_t = std::int32_t;
 using paddr_t = std::uint32_t;
 
 constexpr std::uint32_t MBASE{ 0x8000'0000 };
@@ -36,5 +37,20 @@ constexpr std::uint32_t XLEN{ 32 };
 #define ANSI_NONE       "\33[0m"
 
 #define ANSI_FMT(str, fmt) fmt str ANSI_NONE
+
+#define CONFIG_DIFFTEST
+
+#define __EXPORT __attribute__((visibility("default")))
+
+enum DIRECTION {
+    DIFFTEST_TO_DUT,
+    DIFFTEST_TO_REF,
+};
+
+struct diff_context_t
+{
+	word_t gpr[32];
+	word_t pc;
+};
 
 #endif // !COMMON_H
