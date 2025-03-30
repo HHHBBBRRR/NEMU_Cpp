@@ -83,6 +83,7 @@ public:
 		m_rs1 = inst >> 15;
 		m_rs2 = inst >> 20;
 		
+		m_imm.reset();
 		bitset<32> temp{ inst };
 
 		for (int i{}; i <= 4; i++)
@@ -123,6 +124,7 @@ public:
 		
 		bitset<32> temp{ inst };
 
+		m_imm.reset();
 		m_imm[0] = 0;
 		for (int i{ 1 }; i <= 4; i++)
 		{
@@ -158,6 +160,7 @@ public:
     void decode(word_t inst) override
 	{
 		m_rd = inst >> 7;
+		m_imm.reset();
 		m_imm = inst & 0xFFFF'F000;
 	}
 
@@ -179,7 +182,8 @@ public:
 		m_rd = inst >> 7;
 
 		bitset<32> temp{ inst };
-
+		
+		m_imm.reset();
 		m_imm[0] = 0;
 		for (int i{ 1 }; i <= 10; i++)
 		{
