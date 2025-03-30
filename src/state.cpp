@@ -22,6 +22,5 @@ void invalid_inst(paddr_t thispc)
 
 void nemu_abort(paddr_t thispc)
 {
-    std::cout << "NEMU abort at pc = " << thispc << std::endl;
     nemu_state.set_nemu_state(STATE::NEMU_ABORT, thispc, 1);
 }
