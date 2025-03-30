@@ -143,11 +143,6 @@ void ArithLogicRegInst::execute(CPU& cpu)
 	word_t rs2Val{ cpu.getGPR(rs2.to_ulong()) };
 	word_t rdVal{};
 
-	if (funct7 != 0b0000000 || funct7 != 0b0100000)
-	{
-		throw std::invalid_argument{ "Invalid funct7 value" };
-	}
-
 	switch (funct3)
 	{
 	case 0b000:
@@ -251,7 +246,7 @@ void BranchInst::execute(CPU& cpu)
 
 	if (branch)
 	{
-		targetAddr = cpu.getPC() + imm;
+		targetAddr = cpu.getPC() + static_cast<std::int32_t>(imm);
 		/* The conditional branch instructions will generate an instruction-address-misaligned exception if the
    target address is not aligned to a four-byte boundary and the branch condition evaluates to true. If the
    branch condition evaluates to false, the instruction-address-misaligned exception will not be raised.*/
@@ -267,9 +262,7 @@ void LUIInst::execute(CPU& cpu)		// lui rd, upimm
 {
 	auto rd{ getRd().to_ulong()};
 	auto imm{ getImm().to_ulong()};
-	word_t rdVal{};
-
-	rdVal = imm << 12;
+	word_t rdVal{ static_cast<std::uint32_t>(imm) };
 
 	cpu.setGPR(rd, rdVal);
 }
@@ -281,14 +274,14 @@ void JALRInst::execute(CPU& cpu)	// jalr rd, rs1, imm
 	word_t rs1Val{ cpu.getGPR(getRs1().to_ulong()) };
 	word_t targetAddr{};
 
-	targetAddr = rs1Val + imm;
+	targetAddr = rs1Val + static_cast<std::int32_t>(imm);
 	if (targetAddr % 4)
 	{
 		throw std::invalid_argument{ "Target address is not aligned" };
 	}
 
-	cpu.setPC(targetAddr);
 	cpu.setGPR(rd, cpu.getPC() + 4);
+	cpu.setPC(targetAddr);
 }
 
 void JALInst::execute(CPU& cpu)		// jal rd, label
@@ -299,7 +292,7 @@ void JALInst::execute(CPU& cpu)		// jal rd, label
 	word_t targetAddr{};
 
 	rdVal = cpu.getPC() + 4;
-	targetAddr = cpu.getPC() + imm;
+	targetAddr = cpu.getPC() + static_cast<std::int32_t>(imm);
 	if (targetAddr % 4)
 	{
 		throw std::invalid_argument{ "Target address is not aligned" };
