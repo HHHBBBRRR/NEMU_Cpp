@@ -20,6 +20,7 @@ extern "C" {
 #include <cassert>
 #include <string_view>
 #include <iostream>
+#include <iomanip>
 #include "difftest.h"
 #include "state.h"
 
@@ -30,6 +31,20 @@ static diff_context_t context;
 void (*ref_difftest_init)(std::string_view img, std::uint64_t img_size);
 void (*ref_difftest_regcpy)(diff_context_t *context, DIRECTION direction);
 void (*ref_difftest_exec)(uint64_t n);
+
+static void ref_reg_display(diff_context_t *context)
+{
+	std::cout << std::hex << ANSI_FMT("PC: " << context->pc, ANSI_BG_BLUE) << std::endl;
+    for (std::uint32_t i{}; i < NUM_REGS; ++i)
+    {
+        std::cout << std::left << std::setw(3) << regs[i] << ": " << std::setw(10) << std::hex << context->gpr[i] << "\t";
+        if ((i + 1) % 4 == 0)
+        {
+            std::cout << std::endl;
+        }
+    }
+    std::cout << std::endl;
+}
 
 static void checkregs(CPU& dut, diff_context_t& context)
 {
@@ -51,8 +66,8 @@ static void checkregs(CPU& dut, diff_context_t& context)
 	
 	if (!is_ok)
 	{
-		std::cout << ANSI_FMT("Difftest failed at pc = " << dut.getPC(), ANSI_FG_RED) << std::endl;
 		dut.isa_reg_display();
+		ref_reg_display(&context);
 		nemu_abort(dut.getPC());
 	}
 }
