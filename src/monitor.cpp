@@ -33,11 +33,21 @@ void Monitor::cpu_exec(std::uint64_t n)
 		break;
 	case STATE::NEMU_END:
     case STATE::NEMU_ABORT:
-		std::cout << "nemu: " <<
-        (nemu_state.m_state == STATE::NEMU_ABORT ? ANSI_FMT("ABORT", ANSI_FG_RED) :
-        (nemu_state.m_halt_ret == 0 ? ANSI_FMT("HIT GOOD TRAP", ANSI_FG_GREEN) :
-        ANSI_FMT("HIT BAD TRAP", ANSI_FG_RED))) <<
-        "at pc = " << nemu_state.m_halt_pc << std::endl;
+		if (nemu_state.m_state == STATE::NEMU_ABORT)
+		{
+			std::cout << ANSI_FMT("NEMU_Cpp abort at PC = " << nemu_state.m_halt_pc, ANSI_FG_RED) << std::endl;
+		}
+		else
+		{
+			if (nemu_state.m_halt_ret == 0)
+			{
+				std::cout << ANSI_FMT("NEMU_Cpp hit good trap at PC = " << nemu_state.m_halt_pc, ANSI_FG_GREEN) << std::endl;
+			}
+			else
+			{
+				std::cout << ANSI_FMT("NEMU_Cpp hit bad trap at PC = " << nemu_state.m_halt_pc, ANSI_FG_RED) << std::endl;
+			}			
+		}
 		break;
 	}
 }
@@ -47,6 +57,10 @@ void Monitor::execute(std::uint64_t n)
 	for (; n > 0; n--)
 	{
 		m_cpu.isa_exec_once();
+		if (nemu_state.m_state == STATE::NEMU_END) // "ebreak" instruction means the program has ended
+		{
+			return;
+		}
 		difftest_step(m_cpu);
 		if (nemu_state.m_state != STATE::NEMU_RUNNING)
 		{
