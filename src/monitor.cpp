@@ -35,17 +35,17 @@ void Monitor::cpu_exec(std::uint64_t n)
     case STATE::NEMU_ABORT:
 		if (nemu_state.m_state == STATE::NEMU_ABORT)
 		{
-			std::cout << ANSI_FMT("NEMU_Cpp abort at PC = " << nemu_state.m_halt_pc, ANSI_FG_RED) << std::endl;
+			std::cout << std::hex << ANSI_FMT("NEMU_Cpp abort at PC = 0x" << nemu_state.m_halt_pc, ANSI_FG_RED) << std::endl;
 		}
 		else
 		{
 			if (nemu_state.m_halt_ret == 0)
 			{
-				std::cout << ANSI_FMT("NEMU_Cpp hit good trap at PC = " << nemu_state.m_halt_pc, ANSI_FG_GREEN) << std::endl;
+				std::cout << std::hex << ANSI_FMT("NEMU_Cpp hit good trap at PC = 0x" << nemu_state.m_halt_pc, ANSI_FG_GREEN) << std::endl;
 			}
 			else
 			{
-				std::cout << ANSI_FMT("NEMU_Cpp hit bad trap at PC = " << nemu_state.m_halt_pc, ANSI_FG_RED) << std::endl;
+				std::cout << std::hex << ANSI_FMT("NEMU_Cpp hit bad trap at PC = 0x" << nemu_state.m_halt_pc, ANSI_FG_RED) << std::endl;
 			}			
 		}
 		break;
