@@ -40,7 +40,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 spike: $(SPIKE_MAKEFILE)
 	$(MAKE) -C $(SPIKE_BUILD_DIR) O=$(SPIKE_BUILD_DIR) -j $(NPROC) \
 	CXXFLAGS="-fvisibility=hidden"
-	$(CXX) -std=c++20 -O2 -shared -fPIC -fvisibility=hidden $(SPIKE_INC_LIBS) -o $(SPIKE_IMG)
+	$(CXX) -std=c++20 -O2 -shared -fPIC -fvisibility=hidden $(SPIKE_BUILD_DIR)/difftest.o $(SPIKE_INC_LIBS) -o $(SPIKE_IMG)
 
 $(SPIKE_MAKEFILE):
 	mkdir -p $(@D)
