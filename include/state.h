@@ -30,4 +30,6 @@ void nemu_trap(paddr_t thispc, std::uint32_t code);
 
 void invalid_inst(paddr_t thispc);
 
+void nemu_abort(paddr_t thispc);
+
 #endif // !STATE_H
