@@ -16,13 +16,6 @@
 
 using std::make_shared;
 
-const std::array<std::string, NUM_REGS> regs{
-    "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
-    "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
-    "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
-    "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
-};
-
 InstructionFactory::InstructionFactory()
 {
     /* RVI */
@@ -109,7 +102,7 @@ void CPU::isa_exec_once()
 
 void CPU::isa_reg_display() const
 {
-    std::cout << ANSI_FG_WHITE << ANSI_BG_BLUE << "PC: " << std::hex << getPC() << ANSI_NONE << std::endl;
+    std::cout << std::hex << ANSI_FMT("PC: " << getPC(), ANSI_BG_BLUE) << std::endl;
     for (std::uint32_t i{}; i < NUM_REGS; ++i)
     {
         std::cout << std::left << std::setw(3) << regs[i] << ": " << std::setw(10) << std::hex << getGPR(i) << "\t";

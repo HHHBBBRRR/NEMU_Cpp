@@ -2,6 +2,8 @@
 #define COMMON_H
 
 #include <cstdint>
+#include <array>
+#include <string>
 
 using byte_t = std::uint8_t;
 using half_t = std::uint16_t;
@@ -15,6 +17,15 @@ constexpr std::uint32_t MSIZE{ 1024 * 1024 }; // 1MB
 constexpr std::uint32_t NUM_REGS{ 32 };
 
 constexpr std::uint32_t XLEN{ 32 };
+
+// ----------- regs -----------
+
+const std::array<std::string, NUM_REGS> regs{
+    "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
+    "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
+    "a6", "a7", "s2", "s3", "s4", "s5", "s6", "s7",
+    "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
+};
 
 // ----------- log -----------
 
@@ -36,7 +47,7 @@ constexpr std::uint32_t XLEN{ 32 };
 #define ANSI_BG_WHITE   "\33[1;47m"
 #define ANSI_NONE       "\33[0m"
 
-#define ANSI_FMT(str, fmt) fmt str ANSI_NONE
+#define ANSI_FMT(str, fmt) fmt str << ANSI_NONE
 
 #define CONFIG_DIFFTEST
 
@@ -50,7 +61,7 @@ enum DIRECTION {
 struct diff_context_t
 {
 	word_t gpr[32];
-	word_t pc;
+	word_t pc{ MBASE };
 };
 
 #endif // !COMMON_H
