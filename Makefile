@@ -17,7 +17,7 @@ SPIKE_IMG = $(BUILD_DIR)/riscv32-spikes-so
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 OBJS = $(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
 
-CXX_FLAGS := -std=c++20 -I$(HEADER_DIR) -fpermissive
+CXX_FLAGS := -std=c++20 -I$(HEADER_DIR) -fpermissive -shared -fPIC -fvisibility=hidden
 
 .PHONY: all
 all: build

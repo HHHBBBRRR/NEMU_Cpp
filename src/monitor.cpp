@@ -2,13 +2,11 @@
 #include "paddr.h"
 #include "monitor.h"
 #include "state.h"
-#include "difftest.h"
 
 Monitor::Monitor(std::string_view img, std::string_view ref_so_file)
 {
 	init_mem();
 	std::uint64_t img_size = load_img(img);
-	init_difftest(ref_so_file.data(), img, img_size);
 }
 
 void Monitor::cpu_exec(std::uint64_t n)
@@ -61,7 +59,6 @@ void Monitor::execute(std::uint64_t n)
 		{
 			return;
 		}
-		difftest_step(m_cpu);
 		if (nemu_state.m_state != STATE::NEMU_RUNNING)
 		{
 			return;

@@ -13,92 +13,54 @@
  * See the Mulan PSL v2 for more details.
  ***************************************************************************************/
 
-extern "C" {
-#include <dlfcn.h>
+#include "cpu.h"
+#include "paddr.h"
+
+CPU cpu;
+
+void diff_get_regs(void *diff_context)
+{
+	struct diff_context_t *ctx = (struct diff_context_t *)diff_context;
+	for (uint32_t i = 0; i < NUM_REGS; i++)
+	{
+		ctx->gpr[i] = cpu.getGPR(i);
+	}
+	ctx->pc = cpu.getPC();
 }
 
-#include <cassert>
-#include <string_view>
-#include <iostream>
-#include <iomanip>
-#include "difftest.h"
-#include "state.h"
-
-#ifdef CONFIG_DIFFTEST
-
-static diff_context_t context;
-
-void (*ref_difftest_init)(std::string_view img, std::uint64_t img_size);
-void (*ref_difftest_regcpy)(diff_context_t *context, DIRECTION direction);
-void (*ref_difftest_exec)(uint64_t n);
-
-static void ref_reg_display(diff_context_t *context)
+void diff_set_regs(void *diff_context)
 {
-	std::cout << std::hex << ANSI_FMT("PC: " << context->pc, ANSI_BG_BLUE) << std::endl;
-    for (std::uint32_t i{}; i < NUM_REGS; ++i)
-    {
-        std::cout << std::left << std::setw(3) << regs[i] << ": " << std::setw(10) << std::hex << context->gpr[i] << "\t";
-        if ((i + 1) % 4 == 0)
-        {
-            std::cout << std::endl;
-        }
-    }
-    std::cout << std::endl;
+	struct diff_context_t *ctx = (struct diff_context_t *)diff_context;
+	for (uint32_t i = 0; i < NUM_REGS; i++)
+	{
+		cpu.setGPR(i, ctx->gpr[i]);
+	}
+	cpu.setPC(ctx->pc);
 }
 
-static void checkregs(CPU& dut, diff_context_t& context)
+extern "C" __EXPORT void difftest_init(std::string_view img, std::uint64_t img_size)
 {
-	bool is_ok{ true };
+	init_mem();
+	load_img(img);
+}
 
-	if (dut.getPC() != context.pc)
+extern "C" __EXPORT void difftest_regcpy(diff_context_t *context, DIRECTION direction)
+{
+	if (direction == DIRECTION::DIFFTEST_TO_REF)
 	{
-		is_ok = false;
+		diff_set_regs(context);
 	}
-
-	for (int i{}; i < NUM_REGS; i++)
+	else
 	{
-		if (dut.getGPR(i) != context.gpr[i])
-		{
-			is_ok = false;
-			break;
-		}
-	}
-	
-	if (!is_ok)
-	{
-		dut.isa_reg_display();
-		ref_reg_display(&context);
-		nemu_abort(dut.getPC());
+		diff_get_regs(context);
 	}
 }
 
-void init_difftest(char *ref_so_file, std::string_view img, std::uint64_t img_size)
+extern "C" __EXPORT void difftest_exec(uint64_t n)
 {
-	assert(ref_so_file != NULL);
-
-	void *handle;
-	handle = dlopen(ref_so_file, RTLD_LAZY);
-	assert(handle);
-
-	ref_difftest_init = dlsym(handle, "difftest_init");
-	assert(ref_difftest_init);
-
-	ref_difftest_regcpy = dlsym(handle, "difftest_regcpy");
-	assert(ref_difftest_regcpy);
-
-	ref_difftest_exec = dlsym(handle, "difftest_exec");
-	assert(ref_difftest_exec);
-
-	ref_difftest_init(img, img_size);
-	ref_difftest_regcpy(&context, DIRECTION::DIFFTEST_TO_REF);
+	while (n > 0)
+	{
+		cpu.isa_exec_once();
+		n--;
+	}
 }
-
-void difftest_step(CPU& dut)
-{
-	ref_difftest_exec(1);
-	ref_difftest_regcpy(&context, DIRECTION::DIFFTEST_TO_DUT);
-
-	checkregs(dut, context);
-}
-
-#endif
